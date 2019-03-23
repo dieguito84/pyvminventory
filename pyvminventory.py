@@ -22,7 +22,10 @@ fileLogins = "/opt/pyvminventory/logins.txt"    # esempio: /opt/pyvminventory/lo
 esx,hostname,username,password
 lxc,hostname,username,password
 """
-fileHostlist = "/opt/pyvminventory/web/hostlist.txt"    # esempio: /opt/pyvminventory/web/hostlist.txt 
+
+fileHostlist = "/opt/pyvminventory/web/hostlist.txt"    # esempio: /opt/pyvminventory/web/hostlist.txt
+open(fileHostlist,"w").close()    # scrivo il file vuoto per non far fallire check_path_exists
+
 dirXml = "/opt/pyvminventory/web/xml/"    # esempio: /opt/pyvminventory/web/xml/
 
 # Definizione funzione per check esistenza files e directory
