@@ -15,8 +15,8 @@ th, td {
 <body bgcolor=#F0F8FF>
 
 <?php
-$lablist = "lablist.txt";
-$array = file($lablist, FILE_IGNORE_NEW_LINES);
+$hostlist = "hostlist.txt";
+$array = file($hostlist, FILE_IGNORE_NEW_LINES);
 foreach ($array as $file){
   $xml = simplexml_load_file("xml/" . $file . ".xml");
   echo "<strong>" . $file . "</strong>" . " - last update: " . date ("F d Y H:i:s", filemtime("xml/" . $file . ".xml"));

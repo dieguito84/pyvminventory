@@ -22,7 +22,7 @@ from xml.dom import minidom    # necessario per creazione file XML
 
 # Definizione percorsi files e directory necessari per l'esecuzione
 fileLogins = "logins_default.txt"    # esempio: /opt/pyvminventory/logins.txt
-fileLablist = "lablist_default.txt"    # esempio: /var/www/html/pyvminventory/lablist.txt 
+fileHostlist = "hostlist_default.txt"    # esempio: /var/www/html/pyvminventory/hostlist.txt 
 dirXml = "xml/"    # esempio: /var/www/html/pyvminventory/xml/
 
 # Definizione funzione per check esistenza files e directory
@@ -36,7 +36,7 @@ def check_path_exists(*args):
     pass
 
 # Esecuzione funzione check esistenza files e directory
-check_path_exists(fileLogins, fileLablist, dirXml)
+check_path_exists(fileLogins, fileHostlist, dirXml)
 
 # Definizione funzione per normalizzazione file fileLogins e creazione lista
 def norm_logins():
@@ -99,10 +99,10 @@ def connectorLxc(host, user, pwd):
 
 # Definizione funzione che costruisce un file XML, prendendo in input l'output (liste nested) delle funzioni connectorEsx e connectorLxc
 def xmlConstructor(host, args):
-    xml_lab = ET.Element("lab")    # Definizione radice dell'albero XML
+    xml_host = ET.Element("host")    # Definizione radice dell'albero XML
     i = 0
     while i < len(args):
-        xml_vm = ET.SubElement(xml_lab, "vm")    # vm
+        xml_vm = ET.SubElement(xml_host, "vm")    # vm
         ET.SubElement(xml_vm, "vmid").text = str(args[i][0])    # vmid
         ET.SubElement(xml_vm, "name").text = str(args[i][1])    # name
         ET.SubElement(xml_vm, "ipaddress").text = str(args[i][2])    # ipaddress
@@ -113,7 +113,7 @@ def xmlConstructor(host, args):
         ET.SubElement(xml_vm, "description").text = str(args[i][7])    # description
         ET.SubElement(xml_vm, "expirydate").text = str(args[i][8])    # expirydate
         i += 1
-    xml_reparsed = minidom.parseString(ET.tostring(xml_lab, encoding="utf-8"))    # Somma di tutti i nodi per costruzione albero XML
+    xml_reparsed = minidom.parseString(ET.tostring(xml_host, encoding="utf-8"))    # Somma di tutti i nodi per costruzione albero XML
     xml_tree = xml_reparsed.toprettyxml(indent="  ", encoding="utf-8")    # Aggiunta prolog iniziale e indentazioni all'albero XML
     with open(dirXml + host + ".xml", "wb") as f:
         f.write(xml_tree)
@@ -133,7 +133,7 @@ for row in logins:
 
 # Assegnazione lista ottenuta dalla manipolazione di fileLogins
 logins = norm_logins()
-# Creazione fileLablist a seconda della lista ottenuta da fileLogins
-with open (fileLablist,"w") as f:
+# Creazione fileHostlist a seconda della lista ottenuta da fileLogins
+with open (fileHostlist,"w") as f:
     for row in logins:
         f.write(row.split(",")[1] + "\n")
