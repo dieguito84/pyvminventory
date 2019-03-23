@@ -1,0 +1,2 @@
+esx,hostname,username,password
+lxc,hostname,username,password
