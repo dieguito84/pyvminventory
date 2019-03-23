@@ -3,3 +3,6 @@
 
 # Editors
 .vscode
+
+# Application specific
+logins.txt

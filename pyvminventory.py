@@ -5,12 +5,8 @@
 # Author: Diego Mariani - dmariani (at) avantune.com
 #
 
-import pyVmomi
-
-from pyVmomi import vim
-from pyVmomi import vmodl
-
 from pyVim.connect import SmartConnect, Disconnect
+from pyVmomi import vim
 
 import os
 import sys
@@ -21,9 +17,13 @@ import xml.etree.ElementTree as ET    # necessario per creazione file XML
 from xml.dom import minidom    # necessario per creazione file XML
 
 # Definizione percorsi files e directory necessari per l'esecuzione
-fileLogins = "logins_default.txt"    # esempio: /opt/pyvminventory/logins.txt
-fileHostlist = "hostlist_default.txt"    # esempio: /var/www/html/pyvminventory/hostlist.txt 
-dirXml = "xml/"    # esempio: /var/www/html/pyvminventory/xml/
+fileLogins = "/opt/pyvminventory/logins.txt"    # esempio: /opt/pyvminventory/logins.txt
+""" fileLogins format
+esx,hostname,username,password
+lxc,hostname,username,password
+"""
+fileHostlist = "/opt/pyvminventory/web/hostlist.txt"    # esempio: /opt/pyvminventory/web/hostlist.txt 
+dirXml = "/opt/pyvminventory/web/xml/"    # esempio: /opt/pyvminventory/web/xml/
 
 # Definizione funzione per check esistenza files e directory
 def check_path_exists(*args):
