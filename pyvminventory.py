@@ -21,9 +21,9 @@ import xml.etree.ElementTree as ET    # necessario per creazione file XML
 from xml.dom import minidom    # necessario per creazione file XML
 
 # Definizione percorsi files e directory necessari per l'esecuzione
-fileLogins = "/opt/pyvminventory/logins.txt"    # all'interno del file inserire campo con tipologia di virtualizzatore (ESX o LXC)
-fileLablist = "/var/www/html/pyvminventory/lablist.txt"
-dirXml = "/var/www/html/pyvminventory/xml/"
+fileLogins = "logins_default.txt"    # esempio: /opt/pyvminventory/logins.txt
+fileLablist = "lablist_default.txt"    # esempio: /var/www/html/pyvminventory/lablist.txt 
+dirXml = "xml/"    # esempio: /var/www/html/pyvminventory/xml/
 
 # Definizione funzione per check esistenza files e directory
 def check_path_exists(*args):
