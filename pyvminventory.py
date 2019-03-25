@@ -16,6 +16,12 @@ import ssl
 import xml.etree.ElementTree as ET    # necessario per creazione file XML
 from xml.dom import minidom    # necessario per creazione file XML
 
+import paramiko
+import socket    # per gestire le exception di paramiko
+
+import warnings    # workaround per eliminare warning ad ogni connessione
+warnings.filterwarnings(action='ignore',module='.*paramiko.*')    # workaround per eliminare warning ad ogni connessione
+
 # Definizione percorsi files e directory necessari per l'esecuzione
 fileLogins = "/opt/pyvminventory/logins.txt"    # esempio: /opt/pyvminventory/logins.txt
 """ fileLogins format
@@ -98,7 +104,34 @@ def connectorEsx(host, user, pwd):
 
 # todo - Definizione funzione per connettersi ad un LXC che ritorna una lista nested che contiene tutte le vm ed i relativi dettagli
 def connectorLxc(host, user, pwd):
-    pass
+    try:
+        vm_list = []    # lista nested contenente tutte le liste semplici vm_details
+        client = paramiko.SSHClient()
+        client.load_system_host_keys()
+        client.set_missing_host_key_policy(paramiko.AutoAddPolicy)
+
+        client.connect(hostname=host, port=22, username=user, password=pwd, timeout=10)
+
+        stdin, stdout, stderr = client.exec_command("lxc-ls")
+        for line in stdout.readlines():
+            vm_details = ["", "", "", "", "", "", "", "", ""]    # lista semplice contenente i dettagli della singola vm
+            vm_details[1] = vm_details[3] = str.strip(line)    # name e hostname
+            stdin, stdout, stderr = client.exec_command("lxc-info -n " + str.strip(line) + " -pH && lxc-info -n " + str.strip(line) + " -iH")
+            details = stdout.readlines()
+            if len(details) > 0:
+                vm_details[0] = str.strip(details[0])    # vmid
+                vm_details[2] = str.strip(details[1])    # ipaddress
+            else:
+                vm_details[0] = ""    # vmid
+                vm_details[2] = ""    # ipdrress
+            vm_list.append(vm_details)    # append della lista vm_details alla lista nested vm_list
+
+    except socket.error:
+        pass
+
+    finally:
+        client.close()
+        return vm_list
 
 # Definizione funzione che costruisce un file XML, prendendo in input l'output (liste nested) delle funzioni connectorEsx e connectorLxc
 def xmlConstructor(host, args):
