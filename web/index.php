@@ -10,6 +10,12 @@ table, th, td {
 th, td {
     padding: 5px;
 }
+th {
+  background-color: #ff6600;
+  color: white;
+}
+tr:nth-child(even) {background-color: #e6e6e6;}
+tr:nth-child(odd) {background-color: #cccccc;}
 </style>
 </head>
 <body bgcolor=#F0F8FF>
