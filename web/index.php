@@ -4,18 +4,22 @@
 <title>VM Inventory</title>
 <style>
 table, th, td {
-    border: 1px solid grey;
-    border-collapse:collapse;
+  border: 1px solid grey;
+  border-collapse:collapse;
 }
 th, td {
-    padding: 5px;
+  padding: 5px;
 }
 th {
   background-color: #ff6600;
   color: white;
 }
-tr:nth-child(even) {background-color: #e6e6e6;}
-tr:nth-child(odd) {background-color: #cccccc;}
+tr:nth-child(even) {
+  background-color: #e6e6e6;
+}
+tr:nth-child(odd) {
+  background-color: #cccccc;
+}
 </style>
 </head>
 <body bgcolor=#F0F8FF>
