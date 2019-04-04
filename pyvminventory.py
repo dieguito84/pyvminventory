@@ -23,6 +23,7 @@ import warnings    # workaround per eliminare warning ad ogni connessione
 warnings.filterwarnings(action='ignore',module='.*paramiko.*')    # workaround per eliminare warning ad ogni connessione
 
 # Definizione percorsi files e directory necessari per l'esecuzione
+# todo - utilizzare sys.path[0] o os.path.dirname(os.path.realpath(__file__)) invece dei percorsi assoluti
 fileLogins = "/opt/pyvminventory/logins.txt"    # esempio: /opt/pyvminventory/logins.txt
 """ fileLogins format
 esx,hostname,username,password
