@@ -24,16 +24,16 @@ warnings.filterwarnings(action='ignore',module='.*paramiko.*')    # workaround p
 
 # Definizione percorsi files e directory necessari per l'esecuzione
 # todo - utilizzare sys.path[0] o os.path.dirname(os.path.realpath(__file__)) invece dei percorsi assoluti
-fileLogins = "/opt/pyvminventory/logins.txt"    # esempio: /opt/pyvminventory/logins.txt
-""" fileLogins format
+file_logins = "/opt/pyvminventory/logins.txt"    # esempio: /opt/pyvminventory/logins.txt
+""" file_logins format
 esx,hostname,username,password
 lxc,hostname,username,password
 """
 
-fileHostlist = "/opt/pyvminventory/web/hostlist.txt"    # esempio: /opt/pyvminventory/web/hostlist.txt
-open(fileHostlist,"w").close()    # scrivo il file vuoto per non far fallire check_path_exists
+file_hostlist = "/opt/pyvminventory/web/hostlist.txt"    # esempio: /opt/pyvminventory/web/hostlist.txt
+open(file_hostlist,"w").close()    # scrivo il file vuoto per non far fallire check_path_exists
 
-dirXml = "/opt/pyvminventory/web/xml/"    # esempio: /opt/pyvminventory/web/xml/
+dir_xml = "/opt/pyvminventory/web/xml/"    # esempio: /opt/pyvminventory/web/xml/
 
 # Definizione funzione per check esistenza files e directory
 def check_path_exists(*args):
@@ -46,18 +46,18 @@ def check_path_exists(*args):
     pass
 
 # Esecuzione funzione check esistenza files e directory
-check_path_exists(fileLogins, fileHostlist, dirXml)
+check_path_exists(file_logins, file_hostlist, dir_xml)
 
-# Definizione funzione per normalizzazione file fileLogins e creazione lista
+# Definizione funzione per normalizzazione file file_logins e creazione lista
 def norm_logins():
-    with open (fileLogins,"r") as f:
+    with open (file_logins,"r") as f:
         return map(str.strip,f.readlines())    # strip \n alla fine di ogni elemento della lista
 
-# Assegnazione lista ottenuta dalla manipolazione di fileLogins
+# Assegnazione lista ottenuta dalla manipolazione di file_logins
 logins = norm_logins()
 
 # Definizione funzione per connettersi ad un ESX che ritorna una lista nested che contiene tutte le vm ed i relativi dettagli
-def connectorEsx(host, user, pwd):
+def connector_esx(host, user, pwd):
     # todo - mettere tutto sotto try except per gestire eventuali eccezioni
     context = None
     if hasattr(ssl, '_create_unverified_context'):
@@ -104,7 +104,7 @@ def connectorEsx(host, user, pwd):
     return vm_list
 
 # todo - Definizione funzione per connettersi ad un LXC che ritorna una lista nested che contiene tutte le vm ed i relativi dettagli
-def connectorLxc(host, user, pwd):
+def connector_lxc(host, user, pwd):
     try:
         vm_list = []    # lista nested contenente tutte le liste semplici vm_details
         client = paramiko.SSHClient()
@@ -134,8 +134,8 @@ def connectorLxc(host, user, pwd):
         client.close()
         return vm_list
 
-# Definizione funzione che costruisce un file XML, prendendo in input l'output (liste nested) delle funzioni connectorEsx e connectorLxc
-def xmlConstructor(host, args):
+# Definizione funzione che costruisce un file XML, prendendo in input l'output (liste nested) delle funzioni connector_esx e connector_lxc
+def xml_constructor(host, args):
     xml_host = ET.Element("host")    # Definizione radice dell'albero XML
     i = 0
     while i < len(args):
@@ -152,25 +152,25 @@ def xmlConstructor(host, args):
         i += 1
     xml_reparsed = minidom.parseString(ET.tostring(xml_host, encoding="utf-8"))    # Somma di tutti i nodi per costruzione albero XML
     xml_tree = xml_reparsed.toprettyxml(indent="  ", encoding="utf-8")    # Aggiunta prolog iniziale e indentazioni all'albero XML
-    with open(dirXml + host + ".xml", "wb") as f:
+    with open(dir_xml + host + ".xml", "wb") as f:
         f.write(xml_tree)
 
-# Meccanismo che si occupa di indirizzare al giusto connettore a seconda del contenuto di fileLogins (ESX o LXC)
+# Meccanismo che si occupa di indirizzare al giusto connettore a seconda del contenuto di file_logins (ESX o LXC)
 for row in logins:
     hypervisor = row.split(",")[0]
     host = row.split(",")[1]
     user = row.split(",")[2]
     pwd = row.split(",")[3]
     if hypervisor == "esx":
-        xmlConstructor(host, connectorEsx(host, user, pwd))
+        xml_constructor(host, connector_esx(host, user, pwd))
     elif hypervisor == "lxc":
-        xmlConstructor(host, connectorLxc(host, user, pwd))
+        xml_constructor(host, connector_lxc(host, user, pwd))
     else:
         pass
 
-# Assegnazione lista ottenuta dalla manipolazione di fileLogins
+# Assegnazione lista ottenuta dalla manipolazione di file_logins
 logins = norm_logins()
-# Creazione fileHostlist a seconda della lista ottenuta da fileLogins
-with open (fileHostlist,"w") as f:
+# Creazione file_hostlist a seconda della lista ottenuta da file_logins
+with open (file_hostlist,"w") as f:
     for row in logins:
         f.write(row.split(",")[1] + "\n")
