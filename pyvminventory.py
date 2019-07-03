@@ -23,7 +23,7 @@ import warnings    # workaround per eliminare warning ad ogni connessione
 warnings.filterwarnings(action='ignore',module='.*paramiko.*')    # workaround per eliminare warning ad ogni connessione
 
 # Definizione percorsi files e directory necessari per l'esecuzione
-# todo - utilizzare sys.path[0] o os.path.dirname(os.path.realpath(__file__)) invece dei percorsi assoluti
+# TODO: utilizzare sys.path[0] o os.path.dirname(os.path.realpath(__file__)) invece dei percorsi assoluti
 file_logins = "/opt/pyvminventory/logins.txt"    # esempio: /opt/pyvminventory/logins.txt
 """ file_logins format
 esx,hostname,username,password
@@ -58,13 +58,14 @@ logins = norm_logins()
 
 # Definizione funzione per connettersi ad un ESX che ritorna una lista nested che contiene tutte le vm ed i relativi dettagli
 def connector_esx(host, user, pwd):
-    # todo - mettere tutto sotto try except per gestire eventuali eccezioni
+    # TODO: mettere tutto sotto try except per gestire eventuali eccezioni
+    # TODO: gestire eccezione pyVmomi.VmomiSupport.MethodNotFound: (vmodl.fault.MethodNotFound) relativa alla connessione a ESX 4.0.0 -> creare una funzione per leggere i dettagli tramite SSH, come nel vecchio script
     context = None
     if hasattr(ssl, '_create_unverified_context'):
        context = ssl._create_unverified_context()
 
     si = SmartConnect(host=host, user=user, pwd=pwd, port=443, sslContext=context)
-    # todo - gestire in maniera migliore l'errore utente e password sbagliati
+    # TODO: gestire in maniera migliore l'errore utente e password sbagliati
     if not si:
         print("Could not connect to the specified host using specified "
               "username and password")
@@ -103,7 +104,7 @@ def connector_esx(host, user, pwd):
                 vm_list.append(vm_details)    # append della lista vm_details alla lista nested vm_list
     return vm_list
 
-# todo - Definizione funzione per connettersi ad un LXC che ritorna una lista nested che contiene tutte le vm ed i relativi dettagli
+# Definizione funzione per connettersi ad un LXC che ritorna una lista nested che contiene tutte le vm ed i relativi dettagli
 def connector_lxc(host, user, pwd):
     try:
         vm_list = []    # lista nested contenente tutte le liste semplici vm_details
