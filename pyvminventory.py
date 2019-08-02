@@ -143,22 +143,23 @@ def connector_lxc(host, user, pwd):
 def xml_constructor(host, args):
     xml_host = ET.Element("host")    # Definizione radice dell'albero XML
     i = 0
-    while i < len(args):
-        xml_vm = ET.SubElement(xml_host, "vm")    # vm
-        ET.SubElement(xml_vm, "vmid").text = str(args[i][0])    # vmid
-        ET.SubElement(xml_vm, "name").text = str(args[i][1])    # name
-        ET.SubElement(xml_vm, "ipaddress").text = str(args[i][2])    # ipaddress
-        ET.SubElement(xml_vm, "hostname").text = str(args[i][3])    # hostname
-        ET.SubElement(xml_vm, "guestos").text = str(args[i][4])    # guestos
-        ET.SubElement(xml_vm, "owner").text = str(args[i][5])    # owner
-        ET.SubElement(xml_vm, "team").text = str(args[i][6])    # team
-        ET.SubElement(xml_vm, "description").text = str(args[i][7])    # description
-        ET.SubElement(xml_vm, "expirydate").text = str(args[i][8])    # expirydate
-        i += 1
-    xml_reparsed = minidom.parseString(ET.tostring(xml_host, encoding="utf-8"))    # Somma di tutti i nodi per costruzione albero XML
-    xml_tree = xml_reparsed.toprettyxml(indent="  ", encoding="utf-8")    # Aggiunta prolog iniziale e indentazioni all'albero XML
-    with open(dir_xml + host + ".xml", "wb") as f:
-        f.write(xml_tree)
+    if args:
+        while i < len(args):
+            xml_vm = ET.SubElement(xml_host, "vm")    # vm
+            ET.SubElement(xml_vm, "vmid").text = str(args[i][0])    # vmid
+            ET.SubElement(xml_vm, "name").text = str(args[i][1])    # name
+            ET.SubElement(xml_vm, "ipaddress").text = str(args[i][2])    # ipaddress
+            ET.SubElement(xml_vm, "hostname").text = str(args[i][3])    # hostname
+            ET.SubElement(xml_vm, "guestos").text = str(args[i][4])    # guestos
+            ET.SubElement(xml_vm, "owner").text = str(args[i][5])    # owner
+            ET.SubElement(xml_vm, "team").text = str(args[i][6])    # team
+            ET.SubElement(xml_vm, "description").text = str(args[i][7])    # description
+            ET.SubElement(xml_vm, "expirydate").text = str(args[i][8])    # expirydate
+            i += 1
+        xml_reparsed = minidom.parseString(ET.tostring(xml_host, encoding="utf-8"))    # Somma di tutti i nodi per costruzione albero XML
+        xml_tree = xml_reparsed.toprettyxml(indent="  ", encoding="utf-8")    # Aggiunta prolog iniziale e indentazioni all'albero XML
+        with open(dir_xml + host + ".xml", "wb") as f:
+            f.write(xml_tree)
 
 # Meccanismo che si occupa di indirizzare al giusto connettore a seconda del contenuto di file_logins (ESX o LXC)
 for row in logins:
