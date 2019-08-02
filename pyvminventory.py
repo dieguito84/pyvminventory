@@ -58,7 +58,6 @@ logins = norm_logins()
 
 # Definizione funzione per connettersi ad un ESX che ritorna una lista nested che contiene tutte le vm ed i relativi dettagli
 def connector_esx(host, user, pwd):
-    # TODO: mettere tutto sotto try except per gestire eventuali eccezioni
     # TODO: gestire eccezione pyVmomi.VmomiSupport.MethodNotFound: (vmodl.fault.MethodNotFound) relativa alla connessione a ESX 4.0.0 -> creare una funzione per leggere i dettagli tramite SSH, come nel vecchio script
     try:
         context = None
