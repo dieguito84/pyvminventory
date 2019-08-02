@@ -60,49 +60,53 @@ logins = norm_logins()
 def connector_esx(host, user, pwd):
     # TODO: mettere tutto sotto try except per gestire eventuali eccezioni
     # TODO: gestire eccezione pyVmomi.VmomiSupport.MethodNotFound: (vmodl.fault.MethodNotFound) relativa alla connessione a ESX 4.0.0 -> creare una funzione per leggere i dettagli tramite SSH, come nel vecchio script
-    context = None
-    if hasattr(ssl, '_create_unverified_context'):
-       context = ssl._create_unverified_context()
+    try:
+        context = None
+        if hasattr(ssl, '_create_unverified_context'):
+            context = ssl._create_unverified_context()
 
-    si = SmartConnect(host=host, user=user, pwd=pwd, port=443, sslContext=context)
-    # TODO: gestire in maniera migliore l'errore utente e password sbagliati
-    if not si:
-        print("Could not connect to the specified host using specified "
-              "username and password")
+        si = SmartConnect(host=host, user=user, pwd=pwd, port=443, sslContext=context)
+        # TODO: gestire in maniera migliore l'errore utente e password sbagliati
+        if not si:
+            print("Could not connect to the specified host using specified "
+                "username and password")
 
-    atexit.register(Disconnect, si)
+        atexit.register(Disconnect, si)
 
-    content = si.RetrieveContent()
-    vm_list = []    # lista nested contenente tutte le liste semplici vm_details
-    for child in content.rootFolder.childEntity:
-        if hasattr(child, 'vmFolder'):
-            datacenter = child
-            vmFolder = datacenter.vmFolder
-            vmList = vmFolder.childEntity
-            for vm in vmList:
-                vm_details = []    # lista semplice contenente i dettagli della singola vm
-                vmid = str(vm.summary.vm)
-                vm_details.append(vmid[20:-1])    # vmid
-                vm_details.append(str(vm.summary.config.name))    # name
-                vm_details.append(str(vm.guest.ipAddress))    # ipaddress
-                vm_details.append(str(vm.guest.hostName))    # hostname
-                vm_details.append(str(vm.summary.config.guestFullName))    # guestos
-                # se la descrizione è formattata correttamente la splitto utilizzando " - " come delimitatore
-                if vm.summary.config.annotation and vm.summary.config.annotation.count(" - ") == 3:
-                    annotation_split = vm.summary.config.annotation.split(" - ")
-                # se la descrizione esiste ma non è formattata correttamente la inserisco completamente nel campo description
-                elif vm.summary.config.annotation:
-                    annotation_split = ["","",str(vm.summary.config.annotation),""]
-                # se la descrizione non esiste imposto come vuoti i campi owner, team, description e expirydate
-                else:
-                    annotation_split = ["","","",""]
-                vm_details.append(str(annotation_split[0]))    # owner
-                vm_details.append(str(annotation_split[1]))    # team
-                vm_details.append(str(annotation_split[2]))    # description
-                expirydate = str(annotation_split[3]).replace("Scadenza:", "")
-                vm_details.append(str.strip(expirydate))    # expirydate
-                vm_list.append(vm_details)    # append della lista vm_details alla lista nested vm_list
-    return vm_list
+        content = si.RetrieveContent()
+        vm_list = []    # lista nested contenente tutte le liste semplici vm_details
+        for child in content.rootFolder.childEntity:
+            if hasattr(child, 'vmFolder'):
+                datacenter = child
+                vmFolder = datacenter.vmFolder
+                vmList = vmFolder.childEntity
+                for vm in vmList:
+                    vm_details = []    # lista semplice contenente i dettagli della singola vm
+                    vmid = str(vm.summary.vm)
+                    vm_details.append(vmid[20:-1])    # vmid
+                    vm_details.append(str(vm.summary.config.name))    # name
+                    vm_details.append(str(vm.guest.ipAddress))    # ipaddress
+                    vm_details.append(str(vm.guest.hostName))    # hostname
+                    vm_details.append(str(vm.summary.config.guestFullName))    # guestos
+                    # se la descrizione è formattata correttamente la splitto utilizzando " - " come delimitatore
+                    if vm.summary.config.annotation and vm.summary.config.annotation.count(" - ") == 3:
+                        annotation_split = vm.summary.config.annotation.split(" - ")
+                    # se la descrizione esiste ma non è formattata correttamente la inserisco completamente nel campo description
+                    elif vm.summary.config.annotation:
+                        annotation_split = ["","",str(vm.summary.config.annotation),""]
+                    # se la descrizione non esiste imposto come vuoti i campi owner, team, description e expirydate
+                    else:
+                        annotation_split = ["","","",""]
+                    vm_details.append(str(annotation_split[0]))    # owner
+                    vm_details.append(str(annotation_split[1]))    # team
+                    vm_details.append(str(annotation_split[2]))    # description
+                    expirydate = str(annotation_split[3]).replace("Scadenza:", "")
+                    vm_details.append(str.strip(expirydate))    # expirydate
+                    vm_list.append(vm_details)    # append della lista vm_details alla lista nested vm_list
+        return vm_list
+
+    except:
+        pass
 
 # Definizione funzione per connettersi ad un LXC che ritorna una lista nested che contiene tutte le vm ed i relativi dettagli
 def connector_lxc(host, user, pwd):
