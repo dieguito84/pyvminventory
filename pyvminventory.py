@@ -5,6 +5,9 @@
 # Author: Diego Mariani - dmariani (at) avantune.com
 #
 
+# TODO: modify entire script and PHP web page to use sqlite database instead of XML files
+# TODO: manage state of last check, keep it in a database's field and show it on the PHP page (green OK or red FAIL)
+
 from pyVim.connect import SmartConnect, Disconnect
 from pyVmomi import vim
 
