@@ -146,7 +146,7 @@ def xml_constructor(host, hypervisor, args):
     xml_host = ET.Element("host")    # Definizione radice dell'albero XML
     if hypervisor == "esx":
         ET.SubElement(xml_host, "hypervisor").text = str("https://" + host + "/ui")
-    elif:
+    elif hypervisor == "lxc":
         ET.SubElement(xml_host, "hypervisor").text = str("http://" + host + ":5000")
     else:
         pass
