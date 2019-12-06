@@ -145,9 +145,9 @@ def connector_lxc(host, user, pwd):
 def xml_constructor(host, hypervisor, args):
     xml_host = ET.Element("host")    # Definizione radice dell'albero XML
     if hypervisor == "esx":
-        ET.SubElement(xml_host, "hypervisor").text = str("https://" + host + "/ui")
+        ET.SubElement(xml_host, "hypervisor").text = str("https://" + host + "/ui")    # ESX console URL
     elif hypervisor == "lxc":
-        ET.SubElement(xml_host, "hypervisor").text = str("http://" + host + ":5000")
+        ET.SubElement(xml_host, "hypervisor").text = str("http://" + host + ":5000")   # LXC console URL
     else:
         pass
     i = 0
