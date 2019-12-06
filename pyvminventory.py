@@ -142,8 +142,12 @@ def connector_lxc(host, user, pwd):
         return vm_list
 
 # Definizione funzione che costruisce un file XML, prendendo in input l'output (liste nested) delle funzioni connector_esx e connector_lxc
-def xml_constructor(host, args):
+def xml_constructor(host, hypervisor, args):
     xml_host = ET.Element("host")    # Definizione radice dell'albero XML
+    if hypervisor == "esx":
+        ET.SubElement(xml_host, "hypervisor").text = str("https://" + host + "/ui")
+    else:
+        ET.SubElement(xml_host, "hypervisor").text = str("http://" + host + ":5000")
     i = 0
     if args:
         while i < len(args):
@@ -170,9 +174,9 @@ for row in logins:
     user = row.split(",")[2]
     pwd = row.split(",")[3]
     if hypervisor == "esx":
-        xml_constructor(host, connector_esx(host, user, pwd))
+        xml_constructor(host, hypervisor, connector_esx(host, user, pwd))
     elif hypervisor == "lxc":
-        xml_constructor(host, connector_lxc(host, user, pwd))
+        xml_constructor(host, hypervisor, connector_lxc(host, user, pwd))
     else:
         pass
 
