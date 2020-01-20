@@ -20,7 +20,7 @@ import xml.etree.ElementTree as ET    # necessario per creazione file XML
 from xml.dom import minidom    # necessario per creazione file XML
 
 import paramiko
-import socket    # per gestire le exception di paramiko
+import socket    # per gestire le exception di paramiko e la risoluzione DNS
 
 import warnings    # workaround per eliminare warning ad ogni connessione
 warnings.filterwarnings(action='ignore',module='.*paramiko.*')    # workaround per eliminare warning ad ogni connessione
@@ -150,6 +150,10 @@ def xml_constructor(host, hypervisor, args):
         ET.SubElement(xml_host, "hypervisor").text = str("http://" + host + ":5000")   # LXC console URL
     else:
         pass
+    try:
+        ET.SubElement(xml_host, "hostipaddress").text = str(socket.gethostbyname(host))    # ottenimento ip address dell'host
+    except:
+        ET.SubElement(xml_host, "hostipaddress").text = str("NOT FOUND")
     i = 0
     if args:
         while i < len(args):
