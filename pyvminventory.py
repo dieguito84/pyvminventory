@@ -63,7 +63,7 @@ logins = norm_logins()
 def connector_esx(host, user, pwd):
     # TODO: gestire eccezione pyVmomi.VmomiSupport.MethodNotFound: (vmodl.fault.MethodNotFound) relativa alla connessione a ESX 4.0.0 -> creare una funzione per leggere i dettagli tramite SSH, come nel vecchio script
     try:
-        socket.setdefaulttimeout(30)    # timeout di 30 secondi
+        socket.setdefaulttimeout(10)    # timeout di 10 secondi
         context = None
         if hasattr(ssl, '_create_unverified_context'):
             context = ssl._create_unverified_context()
