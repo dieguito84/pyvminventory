@@ -7,6 +7,7 @@
 
 # TODO: modify entire script and PHP web page to use sqlite database instead of XML files
 # TODO: manage state of last check, keep it in a database's field and show it on the PHP page (green OK or red FAIL)
+# TODO: loggare su file l'esecuzione dello script tramite il modulo logging
 
 from pyVim.connect import SmartConnect, Disconnect
 from pyVmomi import vim
